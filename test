@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+#
+# Test bash-path
+#
+# Author: Dave Eddy <dave@daveeddy.com>
+# Date: September 07, 2018
+# License: MIT
+
+. path.bash || exit 1
+
+banner() {
+	echo '#' "$@"
+}
+
+equal() {
+	local var=$1
+	local wanted=$2
+	local given=${!var}
+
+	if [[ $wanted != "$given" ]]; then
+		cat <<-EOF >&2
+		fail: file ${BASH_SOURCE[0]} line ${BASH_LINENO[0]}
+
+		$given != $wanted
+		 - given:  '$given'
+		 - wanted: '$wanted'
+		EOF
+		exit 1
+	fi
+}
+
+banner 'path_add bad args'
+path_add && exit 1
+
+banner 'path_remove bad args'
+path_remove && exit 1
+
+banner 'path_print_add bad args'
+path_print_add && exit 1
+
+banner 'path_print_remove bad args'
+path_print_remove && exit 1
+
+banner 'simple path_add after'
+myvar=''
+path_add /bin after myvar
+equal myvar ':/bin'
+
+banner 'simple path_add before'
+myvar=''
+path_add /bin before myvar
+equal myvar '/bin:'
+
+banner 'path_add'
+myvar='/'
+path_add /bin  after  myvar
+path_add /sbin after  myvar
+path_add /tmp  before myvar
+equal myvar '/tmp:/:/bin:/sbin'
+
+banner 'path_remove'
+path_remove /     myvar
+path_remove /foo  myvar
+equal myvar '/tmp:/bin:/sbin'
+
+banner 'path_add bad directories'
+path_add /this-shouldnt-exist after myvar
+path_add ./relative-dir       after myvar
+equal myvar '/tmp:/bin:/sbin:/this-shouldnt-exist:./relative-dir'
+
+banner 'path_clean simple'
+path_clean myvar
+equal myvar '/tmp:/bin:/sbin'
+
+banner 'path_clean complex'
+myvar+=':::::.:./:::...:./././::'
+path_clean myvar
+equal myvar '/tmp:/bin:/sbin'
+
+banner 'path_print_remove'
+newvar=$(path_print_remove /tmp myvar)
+equal newvar '/bin:/sbin'
+equal myvar  '/tmp:/bin:/sbin'
+
+banner 'path_print_add'
+newvar=$(path_print_add /tmp after myvar)
+equal newvar '/tmp:/bin:/sbin:/tmp'
+equal myvar  '/tmp:/bin:/sbin'
+
+banner 'path_print_clean'
+myvar='/bin:/bin/:/bin////:'
+clean=$(path_print_clean myvar)
+equal myvar '/bin:/bin/:/bin////:'
+equal clean '/bin'
