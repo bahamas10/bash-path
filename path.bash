@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Functions to modify comma separated variables like $PATH or $MANPATH
+# Functions to modify colon separated variables like $PATH or $MANPATH
 #
 # Author: Dave Eddy <dave@daveeddy.com>
 # Date: September 07, 2018

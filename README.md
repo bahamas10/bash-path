@@ -1,7 +1,7 @@
 Bash Path
 =========
 
-Functions to modify comma separated variables like `$PATH` or `$MANPATH`
+Functions to modify colon separated variables like `$PATH` or `$MANPATH`
 
 Installation
 ------------
