@@ -49,6 +49,9 @@ We can remove from `$PATH` using `path_remove`:
     $ path_remove /usr/local/bin
     $ echo "$PATH"
     /my/new/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/sbin:/my/new/bin:/bin:/bin:/bin
+
+Removing a path that is not present is a noop:
+
     $ path_remove /usr/local/bin
     $ echo "$PATH"
     /my/new/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/sbin:/my/new/bin:/bin:/bin:/bin
