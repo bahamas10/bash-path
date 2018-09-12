@@ -29,7 +29,7 @@ Given the following environment:
     $ . path.bash
     $ PATH='/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
 
-We can add to `$PATH` using `path_add` (similar to `pathmunge`):
+You can add to `$PATH` using `path_add` (similar to `pathmunge`):
 
     $ path_add /my/new/bin
     $ path_add /my/new/sbin before
@@ -44,7 +44,7 @@ Duplicates are also allowed (`path_add` does what you tell it to do):
     $ echo "$PATH"
     /my/new/sbin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/my/new/bin:/bin:/bin:/bin
 
-We can remove from `$PATH` using `path_remove`:
+You can remove from `$PATH` using `path_remove`:
 
     $ path_remove /usr/local/bin
     $ echo "$PATH"
