@@ -138,7 +138,7 @@ this process will:
 
 1. Remove empty elements.
 2. Remove relative directories.
-3. Remove directories that don't access/can't be accessed (checked with `cd`).
+3. Remove directories that don't exist/can't be accessed (checked with `cd`).
 4. Remove duplicates (first element stays, subsequent elements are tossed).
 
 ``` bash
