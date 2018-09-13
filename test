@@ -6,7 +6,7 @@
 # Date: September 07, 2018
 # License: MIT
 
-. path.bash || exit 1
+exit_code=0
 
 banner() {
 	echo '#' "$@"
@@ -24,22 +24,26 @@ equal() {
 		$given != $wanted
 		 - given:  '$given'
 		 - wanted: '$wanted'
+
 		EOF
-		exit 1
+		exit_code=1
 	fi
 }
 
+# we can't continue if we fail to source the library
+. path.bash || exit 1
+
 banner 'path_add bad args'
-path_add && exit 1
+path_add && exit_code=1
 
 banner 'path_remove bad args'
-path_remove && exit 1
+path_remove && exit_code=1
 
 banner 'path_print_add bad args'
-path_print_add && exit 1
+path_print_add && exit_code=1
 
 banner 'path_print_remove bad args'
-path_print_remove && exit 1
+path_print_remove && exit_code=1
 
 banner 'simple path_add after'
 myvar=''
@@ -92,3 +96,5 @@ myvar='/bin:/bin/:/bin////:'
 clean=$(path_print_clean myvar)
 equal myvar '/bin:/bin/:/bin////:'
 equal clean '/bin'
+
+exit "$exit_code"
