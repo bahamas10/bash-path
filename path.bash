@@ -106,8 +106,8 @@ path_print_add() {
 	local arr
 	declare -A seen
 
-	if [[ -z $p ]]; then
-		echo 'path_print_add invalid arguments' >&2
+	if [[ -z $p || $p == *:* ]]; then
+		echo "path_print_add: invalid argument: '$p'" >&2
 		return 1
 	fi
 
@@ -133,8 +133,8 @@ path_print_remove() {
 	local newarr=()
 	declare -A seen
 
-	if [[ -z $p ]]; then
-		echo 'path_print_add invalid arguments' >&2
+	if [[ -z $p || $p == *:* ]]; then
+		echo "path_print_remove: invalid argument: '$p'" >&2
 		return 1
 	fi
 
