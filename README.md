@@ -200,13 +200,9 @@ Run `make test` to run the test suite:
     $ make test
     ./test
     # path_add bad args
-    path_print_add invalid arguments
     # path_remove bad args
-    path_print_add invalid arguments
     # path_print_add bad args
-    path_print_add invalid arguments
     # path_print_remove bad args
-    path_print_add invalid arguments
     # simple path_add after
     # simple path_add before
     # path_add

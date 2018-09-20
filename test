@@ -13,9 +13,8 @@ banner() {
 }
 
 equal() {
-	local var=$1
+	local given=$1
 	local wanted=$2
-	local given=${!var}
 
 	if [[ $wanted != "$given" ]]; then
 		cat <<-EOF >&2
@@ -30,71 +29,101 @@ equal() {
 	fi
 }
 
+varEqual() {
+	local var=$1
+	local wanted=$2
+	local given=${!var}
+
+	equal "$given" "$wanted"
+}
+
+ensureError() {
+	local wanted=$1
+	local msg
+	local code
+
+	shift
+
+	msg=$("$@" 2>&1)
+	code=$?
+
+	equal "$code" 1
+	equal "$msg" "$wanted"
+}
+
+
 # we can't continue if we fail to source the library
 . path.bash || exit 1
 
 banner 'path_add bad args'
-path_add && exit_code=1
+ensureError "path_print_add: invalid argument: ''" path_add
+ensureError "path_print_add: invalid argument: '/foo:/bar'" path_add /foo:/bar
 
 banner 'path_remove bad args'
-path_remove && exit_code=1
+ensureError "path_print_remove: invalid argument: ''" path_remove
+ensureError "path_print_remove: invalid argument: '/foo:/bar'" path_remove \
+    /foo:/bar
 
 banner 'path_print_add bad args'
-path_print_add && exit_code=1
+ensureError "path_print_add: invalid argument: ''" path_print_add
+ensureError "path_print_add: invalid argument: '/foo:/bar'" path_print_add \
+    /foo:/bar
 
 banner 'path_print_remove bad args'
-path_print_remove && exit_code=1
+ensureError "path_print_remove: invalid argument: ''" path_print_remove
+ensureError "path_print_remove: invalid argument: '/foo:/bar'" \
+    path_print_remove /foo:/bar
 
 banner 'simple path_add after'
 myvar=''
 path_add /bin after myvar
-equal myvar ':/bin'
+varEqual myvar ':/bin'
 
 banner 'simple path_add before'
 myvar=''
 path_add /bin before myvar
-equal myvar '/bin:'
+varEqual myvar '/bin:'
 
 banner 'path_add'
 myvar='/'
 path_add /bin  after  myvar
 path_add /sbin after  myvar
 path_add /tmp  before myvar
-equal myvar '/tmp:/:/bin:/sbin'
+varEqual myvar '/tmp:/:/bin:/sbin'
 
 banner 'path_remove'
 path_remove /     myvar
 path_remove /foo  myvar
-equal myvar '/tmp:/bin:/sbin'
+varEqual myvar '/tmp:/bin:/sbin'
 
 banner 'path_add bad directories'
 path_add /this-shouldnt-exist after myvar
 path_add ./relative-dir       after myvar
-equal myvar '/tmp:/bin:/sbin:/this-shouldnt-exist:./relative-dir'
+varEqual myvar '/tmp:/bin:/sbin:/this-shouldnt-exist:./relative-dir'
 
 banner 'path_clean simple'
 path_clean myvar
-equal myvar '/tmp:/bin:/sbin'
+varEqual myvar '/tmp:/bin:/sbin'
 
 banner 'path_clean complex'
 myvar+=':::::.:./:::...:./././::'
 path_clean myvar
-equal myvar '/tmp:/bin:/sbin'
+varEqual myvar '/tmp:/bin:/sbin'
 
 banner 'path_print_remove'
 newvar=$(path_print_remove /tmp myvar)
-equal newvar '/bin:/sbin'
-equal myvar  '/tmp:/bin:/sbin'
+varEqual newvar '/bin:/sbin'
+varEqual myvar  '/tmp:/bin:/sbin'
 
 banner 'path_print_add'
 newvar=$(path_print_add /tmp after myvar)
-equal newvar '/tmp:/bin:/sbin:/tmp'
-equal myvar  '/tmp:/bin:/sbin'
+varEqual newvar '/tmp:/bin:/sbin:/tmp'
+varEqual myvar  '/tmp:/bin:/sbin'
 
 banner 'path_print_clean'
 myvar='/bin:/bin/:/bin////:'
 clean=$(path_print_clean myvar)
-equal myvar '/bin:/bin/:/bin////:'
-equal clean '/bin'
+varEqual myvar '/bin:/bin/:/bin////:'
+varEqual clean '/bin'
 
 exit "$exit_code"
