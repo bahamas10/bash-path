@@ -119,7 +119,7 @@ path_print_add() {
 	esac
 
 	local IFS=:
-	echo "${arr[*]}"
+	printf '%s\n' "${arr[*]}"
 }
 
 #
@@ -149,7 +149,7 @@ path_print_remove() {
 	done
 
 	local IFS=:
-	echo "${newarr[*]}"
+	printf '%s\n' "${newarr[*]}"
 }
 
 #
@@ -179,7 +179,7 @@ path_print_clean() {
 		fi
 
 		# Normalize path and ensure we can access it
-		p=$(cd "$p" &>/dev/null && echo "$PWD")
+		p=$(CDPATH= builtin cd -- "$p" &>/dev/null && printf '%s' "$PWD")
 
 		# Path doesn't exist or we can't access it
 		if [[ -z $p ]]; then
@@ -197,5 +197,5 @@ path_print_clean() {
 	done
 
 	local IFS=:
-	echo "${newarr[*]}"
+	printf '%s\n' "${newarr[*]}"
 }

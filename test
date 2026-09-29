@@ -126,4 +126,9 @@ clean=$(path_print_clean myvar)
 varEqual myvar '/bin:/bin/:/bin////:'
 varEqual clean '/bin'
 
+banner 'path_clean dangerous'
+myvar='/bin:/usr/bin:-P /bin:-P'
+path_clean myvar
+varEqual myvar '/bin:/usr/bin'
+
 exit "$exit_code"
