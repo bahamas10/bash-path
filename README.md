@@ -12,11 +12,11 @@ Use [bics](https://github.com/bahamas10/bics) to manage this plugin
 
 After installing `bics`, install this plugin by running
 
-    bics install git://github.com/bahamas10/bash-path.git
+    bics install https://github.com/bahamas10/bash-path.git
 
 ### manually
 
-    git clone git://github.com/bahamas10/bash-path.git
+    git clone https://github.com/bahamas10/bash-path.git
     cd bash-path
     cat path.bash >> ~/.bashrc
     exec bash
